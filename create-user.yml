@@ -7,7 +7,6 @@
     # Users to create
     users:
       - username: "user1"
-        userpass: "SDF6tefdr3F"
         comment: "User1 Name"
         key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
 
@@ -16,7 +15,6 @@
     - name: "create users"
       user:
         name: "{{ item.username }}"
-        password: "{{ item.userpass | password_hash('sha512') }}"
         comment: "{{ item.comment }}"
         shell: "/bin/bash"
         generate_ssh_key: "yes"
