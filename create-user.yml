@@ -1,0 +1,29 @@
+---
+
+- hosts: localhost
+  gather_facts: yes
+  vars:
+
+    # Users to create
+    users:
+      - username: "user1"
+        userpass: "SDF6tefdr3F"
+        comment: "User1 Name"
+        key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
+
+  tasks:
+
+    - name: "create users"
+      user:
+        name: "{{ item.username }}"
+        password: "{{ item.userpass | password_hash('sha512') }}"
+        comment: "{{ item.comment }}"
+        shell: "/bin/bash"
+        generate_ssh_key: "yes"
+      with_items: "{{ users }}"
+
+    - name: "update users keys"
+      authorized_key:
+        user: "{{ item.username }}"
+        key: "{{ item.key }}"
+      with_items: "{{ users }}"
